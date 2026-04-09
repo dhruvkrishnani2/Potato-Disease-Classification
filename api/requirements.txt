@@ -6,3 +6,4 @@ pillow
 tensorflow-serving-api
 matplotlib
 numpy
+tensorflow-cpu==2.13.0
