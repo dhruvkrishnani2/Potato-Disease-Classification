@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 # FIXED MODEL PATH (keep model in same folder)
-MODEL = tf.keras.models.load_model("model_v1.keras")
+MODEL = tf.keras.models.load_model("api/model_v1.keras")
 
 CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
 
