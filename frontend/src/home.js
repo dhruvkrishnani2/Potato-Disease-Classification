@@ -9,7 +9,7 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Paper, CardActionArea, CardMedia, Grid, TableContainer, Table, TableBody, TableHead, TableRow, TableCell, Button, CircularProgress } from "@material-ui/core";
-import cblogo from "./cblogo.PNG";
+import spudguard_img from "./spudguard_img.png";
 import image from "./bg.png";
 import { DropzoneArea } from 'material-ui-dropzone';
 import { common } from '@material-ui/core/colors';
@@ -135,12 +135,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   appbar: {
-    background: '#be6a77',
+    background: '#2d6a4f',
     boxShadow: 'none',
     color: 'white'
   },
   loader: {
-    color: '#be6a77 !important',
+    color: '#2d6a4f !important',
   }
 }));
 export const ImageUpload = () => {
@@ -213,10 +213,10 @@ export const ImageUpload = () => {
       <AppBar position="static" className={classes.appbar}>
         <Toolbar>
           <Typography className={classes.title} variant="h6" noWrap>
-            CodeBasics: Potato Disease Classification
+            SpudGuard: Potato Disease Classification
           </Typography>
           <div className={classes.grow} />
-          <Avatar src={cblogo}></Avatar>
+          <Avatar src={spudguard_img}></Avatar>
         </Toolbar>
       </AppBar>
       <Container maxWidth={false} className={classes.mainContainer} disableGutters={true}>
@@ -267,7 +267,7 @@ export const ImageUpload = () => {
                 </TableContainer>
               </CardContent>}
               {isLoading && <CardContent className={classes.detail}>
-                <CircularProgress color="secondary" className={classes.loader} />
+                <CircularProgress color="inherit" className={classes.loader} />
                 <Typography className={classes.title} variant="h6" noWrap>
                   Processing
                 </Typography>
