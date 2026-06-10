@@ -1,107 +1,146 @@
-# Potato disease classification
+# SpudGuard — Full-Stack Potato Disease Classification
 
-Classify potato leaf images into **Early Blight**, **Late Blight**, or **Healthy** using a TensorFlow/Keras model trained on the [PlantVillage](https://arxiv.org/abs/1511.08060) potato subset. This repo includes a FastAPI service, a React web UI, an optional Streamlit app, training notebooks, and sample Google Cloud–style deployment code.
+Classify potato leaf images into **Early Blight**, **Late Blight**, or **Healthy** using a TensorFlow/Keras model, with **Google Sign-In** and **AI-powered treatment advice** via Google Gemini.
+
+## Architecture
+
+```
+┌─────────────────┐     Google OAuth      ┌──────────────────┐
+│  React Frontend │ ◄────────────────────► │  Google Identity  │
+│  (port 3000)    │                        └──────────────────┘
+└────────┬────────┘
+         │ JWT + REST
+         ▼
+┌─────────────────┐     Gemini API        ┌──────────────────┐
+│  FastAPI Backend│ ◄────────────────────► │  Google Gemini   │
+│  (port 8000)    │                        └──────────────────┘
+└────────┬────────┘
+         │ TensorFlow
+         ▼
+┌─────────────────┐
+│  model_v1.keras │
+└─────────────────┘
+```
 
 ## Features
 
-- REST API (`POST /predict`) for image upload and JSON predictions with confidence scores
-- React + Material-UI frontend that posts images to the API (configure `REACT_APP_API_URL`)
-- Jupyter notebook pipeline for training and exporting `saved_models/model_v1.keras`
-- Optional `gcp/` helpers for bucket-hosted models (reference implementation)
-
-## Repository layout
-
-| Path | Purpose |
-|------|---------|
-| `api/` | FastAPI app (`main.py`), API dependencies (`requirements.txt`), `runtime.txt` for Python version on hosts that use it |
-| `saved_models/` | Trained model (`model_v1.keras`) used by the API |
-| `frontend/` | Create React App UI (axios → `/predict`) |
-| `app1.py` | Streamlit demo (expects a Keras model path—align with your local `.keras` / `.h5` file) |
-| `training/` | `training.ipynb` and expected `PlantVillage/` data layout for potato classes |
-| `gcp/` | Example Cloud Functions–style code loading a model from Google Cloud Storage |
+- **Google OAuth 2.0** — Sign in with Google; JWT session tokens protect all API routes
+- **Disease classification** — Upload a leaf image; CNN model returns label + confidence
+- **AI treatment advice** — Gemini generates symptoms, treatment, and prevention tips (falls back to built-in guidance if no API key)
+- **React + Material-UI** — Drag-and-drop upload, results dashboard, user profile in navbar
 
 ## Prerequisites
 
-- **Python** 3.10+ recommended (see `api/runtime.txt` for one deployment target)
-- **Node.js** 16+ for the React app
-- Trained weights: ensure `saved_models/model_v1.keras` is present (train with `training/training.ipynb` or copy from your artifacts)
+- Python 3.10+
+- Node.js 16+
+- [Google Cloud Console](https://console.cloud.google.com/) OAuth 2.0 Web Client ID
+- [Google AI Studio](https://aistudio.google.com/apikey) Gemini API key (optional but recommended)
 
-## Quick start — API
+## 1. Google OAuth setup
 
-Install dependencies and start the server **from the `api` directory** so the model path `../saved_models/model_v1.keras` resolves correctly.
+1. Go to [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials)
+2. Create an **OAuth 2.0 Client ID** of type **Web application**
+3. Add authorized JavaScript origins:
+   - `http://localhost:3000`
+4. Copy the **Client ID** — use the same value in both `api/.env` and `frontend/.env`
+
+## 2. Environment configuration
+
+**Backend** (`api/.env`):
 
 ```bash
 cd api
-pip install -r requirements.txt
-python main.py
-```
-
-The app listens on `http://localhost:8000` by default.
-
-Alternatively, with uvicorn explicitly:
-
-```bash
-cd api
-uvicorn main:app --host localhost --port 8000
-```
-
-### Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/ping` | Health check |
-| `POST` | `/predict` | Multipart form field `file`: leaf image |
-
-Example response:
-
-```json
-{
-  "class": "Early Blight",
-  "confidence": 0.97
-}
-```
-
-CORS is enabled for `http://localhost` and `http://localhost:3000` (see `api/main.py`).
-
-## Quick start — React frontend
-
-```bash
-cd frontend
-npm install
-```
-
-Copy the example environment file and point it at your API (include the `/predict` path):
-
-```bash
 copy .env.example .env
 ```
 
-On Linux or macOS, use `cp` instead of `copy`. Set `REACT_APP_API_URL` to your predict URL, e.g. `http://localhost:8000/predict`.
+Edit `api/.env`:
+
+```env
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+JWT_SECRET_KEY=a-long-random-secret-string
+GEMINI_API_KEY=your-gemini-api-key
+FRONTEND_URL=http://localhost:3000
+```
+
+**Frontend** (`frontend/.env`):
+
+```bash
+cd frontend
+copy .env.example .env
+```
+
+Edit `frontend/.env`:
+
+```env
+REACT_APP_API_URL=http://localhost:8000
+REACT_APP_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+```
+
+## 3. Install dependencies
+
+```bash
+# Backend
+cd api
+pip install -r requirements.txt
+
+# Frontend
+cd ../frontend
+npm install
+
+# Optional: install root runner
+cd ..
+npm install
+```
+
+## 4. Run the project
+
+### Option A — Run both together (from repo root)
 
 ```bash
 npm start
 ```
 
-The dev server runs on port 3000 and will call the API when you drop in an image.
+### Option B — Run separately (two terminals)
 
-## Streamlit (`app1.py`)
-
-From the repository root (after installing Streamlit and TensorFlow):
+**Terminal 1 — API** (must run from `api/` so the model path resolves):
 
 ```bash
-pip install streamlit tensorflow pillow numpy
-streamlit run app1.py
+cd api
+python main.py
 ```
 
-Update the `load_model()` path in `app1.py` if your weights live at `saved_models/model_v1.keras` instead of `api/model_v1.h5`.
+**Terminal 2 — Frontend:**
+
+```bash
+cd frontend
+npm start
+```
+
+- Frontend: http://localhost:3000
+- API docs: http://localhost:8000/docs
+
+## API endpoints
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/ping` | No | Health check |
+| `POST` | `/auth/google` | No | Exchange Google ID token for JWT |
+| `GET` | `/auth/me` | Yes | Current user profile |
+| `POST` | `/predict` | Yes | Upload leaf image → classification |
+| `POST` | `/ai/advice` | Yes | Get AI treatment advice for a diagnosis |
+
+## Repository layout
+
+| Path | Purpose |
+|------|---------|
+| `api/` | FastAPI backend — auth, prediction, AI advice |
+| `api/auth.py` | Google token verification + JWT |
+| `api/ai_service.py` | Gemini integration + fallback advice |
+| `frontend/` | React app with Google Sign-In |
+| `frontend/src/context/AuthContext.js` | Auth state & API client |
+| `saved_models/` | Trained `model_v1.keras` weights |
+| `training/` | Jupyter notebook + PlantVillage dataset |
 
 ## Training
 
-1. Obtain the PlantVillage dataset and arrange the potato classes under `training/PlantVillage/` as in `training/training.ipynb` (e.g. `Potato___Early_blight`, `Potato___Late_blight`, `Potato___healthy`).
-2. Open `training/training.ipynb` in Jupyter, run the cells, and export the trained model to `saved_models/model_v1.keras` (or adjust the API load path to match your export).
-
-Training uses 256×256 inputs and typical Keras image augmentation; see the notebook for batch size, epochs, and architecture details.
-
-## Google Cloud (`gcp/`)
-
-The `gcp/` folder contains example code that downloads a model from a GCS bucket and runs inference. Update bucket names, object paths, and TensorFlow versions to match your project; treat it as a starting point, not a turnkey deploy.
+See `training/training.ipynb` to train on the PlantVillage potato subset and export to `saved_models/model_v1.keras`.
