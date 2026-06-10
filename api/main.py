@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 
 import numpy as np
@@ -27,7 +28,7 @@ app = FastAPI(title="SpudGuard API", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:3000", "http://localhost"],
+    allow_origins=settings.get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -134,4 +135,5 @@ async def ai_advice(
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+    port = int(os.environ.get("PORT", settings.port))
+    uvicorn.run(app, host="0.0.0.0", port=port)

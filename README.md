@@ -141,6 +141,16 @@ npm start
 | `saved_models/` | Trained `model_v1.keras` weights |
 | `training/` | Jupyter notebook + PlantVillage dataset |
 
+## Deploy to production
+
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for full steps to deploy on **Render** (API) + **Vercel** (frontend).
+
+Quick overview:
+1. Push repo to GitHub
+2. Deploy API with Docker on Render (`Dockerfile` included)
+3. Deploy frontend on Vercel (root: `frontend/`)
+4. Update Google OAuth origins with your production URL
+
 ## Training
 
 See `training/training.ipynb` to train on the PlantVillage potato subset and export to `saved_models/model_v1.keras`.
