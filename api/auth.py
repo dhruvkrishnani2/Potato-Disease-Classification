@@ -8,7 +8,7 @@ from google.auth.transport import requests
 from google.oauth2 import id_token
 from pydantic import BaseModel
 
-from config import get_settings
+from api.config import get_settings
 
 security = HTTPBearer()
 
