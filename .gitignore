@@ -1,0 +1,33 @@
+# Environment & secrets
+.env
+.env.local
+api/.env
+frontend/.env
+api/users.json
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Build output
+frontend/build/
+build/
+dist/
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log

@@ -1,0 +1,10 @@
+frontend/
+training/
+gcp/
+node_modules/
+.git/
+**/__pycache__
+**/.env
+**/.ipynb_checkpoints
+**/*.pyc
+api/users.json
