@@ -8,5 +8,5 @@ pydantic-settings
 python-dotenv
 PyJWT
 google-auth
-google-generativeai==0.7.0
+google-generativeai
 bcrypt
