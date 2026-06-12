@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+tensorflow>=2.21.0
+numpy
+pillow
+python-multipart
+pydantic-settings
+python-dotenv
+PyJWT
+google-auth
+google-generativeai
+bcrypt
