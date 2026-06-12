@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from pydantic import BaseModel
 
-from ai_service import get_ai_advice
+from api.ai_service import get_ai_advice
 from auth import (
     GoogleAuthRequest,
     PasswordLoginRequest,
