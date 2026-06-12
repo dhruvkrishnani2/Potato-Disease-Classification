@@ -1,11 +1,12 @@
-tensorflow>=2.21.0
 fastapi
 uvicorn[standard]
-python-multipart
-pillow
+tensorflow>=2.21.0
 numpy
+pillow
+python-multipart
 pydantic-settings
+python-dotenv
 PyJWT
 google-auth
-google-generativeai
+google-generativeai==0.7.0
 bcrypt
