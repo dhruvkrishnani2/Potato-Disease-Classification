@@ -106,7 +106,7 @@ npm start
 
 ```bash
 cd api
-python main.py
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **Terminal 2 — Frontend:**
@@ -140,16 +140,6 @@ npm start
 | `frontend/src/context/AuthContext.js` | Auth state & API client |
 | `saved_models/` | Trained `model_v1.keras` weights |
 | `training/` | Jupyter notebook + PlantVillage dataset |
-
-## Deploy to production
-
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for full steps to deploy on **Render** (API) + **Vercel** (frontend).
-
-Quick overview:
-1. Push repo to GitHub
-2. Deploy API with Docker on Render (`Dockerfile` included)
-3. Deploy frontend on Vercel (root: `frontend/`)
-4. Update Google OAuth origins with your production URL
 
 ## Training
 
