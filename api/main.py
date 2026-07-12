@@ -9,8 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from pydantic import BaseModel
 
-from ai_service import get_ai_advice
-from auth import (
+from api.ai_service import get_ai_advice
+from api.auth import (
     GoogleAuthRequest,
     PasswordLoginRequest,
     RegisterRequest,
@@ -20,11 +20,15 @@ from auth import (
     user_from_record,
     verify_google_token,
 )
-from user_store import authenticate_user, register_user
-from config import get_settings
+from api.user_store import authenticate_user, register_user
+from api.config import get_settings
 
 settings = get_settings()
-app = FastAPI(title="SpudGuard API", version="2.0.0")
+
+app = FastAPI(
+    title="SpudGuard API",
+    version="2.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,8 +38,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Debug model path on Render
+print("Model path:", settings.model_path)
+print("File exists:", os.path.exists(settings.model_path))
+
 MODEL = tf.keras.models.load_model(settings.model_path)
-CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
+
+CLASS_NAMES = [
+    "Early Blight",
+    "Late Blight",
+    "Healthy",
+]
 
 
 class AuthResponse(BaseModel):
@@ -50,54 +63,88 @@ class AdviceRequest(BaseModel):
 
 
 def read_file_as_image(data: bytes) -> np.ndarray:
-    return np.array(Image.open(BytesIO(data)))
+    image = Image.open(BytesIO(data))
+    return np.array(image)
 
 
 @app.get("/")
 async def root():
     return {
-        "message": "SpudGuard API is running.",
+        "message": "SpudGuard API is running",
         "frontend": settings.frontend_url,
-        "docs": "http://localhost:8000/docs",
         "health": "/ping",
     }
 
 
 @app.get("/ping")
 async def ping():
-    return {"status": "alive", "service": "SpudGuard API"}
+    return {
+        "status": "alive",
+        "service": "SpudGuard API",
+    }
 
 
 @app.post("/auth/google", response_model=AuthResponse)
 async def google_auth(body: GoogleAuthRequest):
     user = verify_google_token(body.credential)
     token = create_access_token(user)
-    return AuthResponse(access_token=token, user=user)
+
+    return AuthResponse(
+        access_token=token,
+        user=user,
+    )
 
 
 @app.post("/auth/register", response_model=AuthResponse)
 async def register(body: RegisterRequest):
     try:
-        record = register_user(body.username, body.password, body.name, body.email)
+        record = register_user(
+            body.username,
+            body.password,
+            body.name,
+            body.email,
+        )
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+
     user = user_from_record(record, record["sub"])
     token = create_access_token(user)
-    return AuthResponse(access_token=token, user=user)
+
+    return AuthResponse(
+        access_token=token,
+        user=user,
+    )
 
 
 @app.post("/auth/login", response_model=AuthResponse)
 async def login(body: PasswordLoginRequest):
-    record = authenticate_user(body.username, body.password)
+    record = authenticate_user(
+        body.username,
+        body.password,
+    )
+
     if not record:
-        raise HTTPException(status_code=401, detail="Invalid username or password.")
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid username or password.",
+        )
+
     user = user_from_record(record, record["sub"])
     token = create_access_token(user)
-    return AuthResponse(access_token=token, user=user)
+
+    return AuthResponse(
+        access_token=token,
+        user=user,
+    )
 
 
 @app.get("/auth/me", response_model=User)
-async def get_me(current_user: User = Depends(get_current_user)):
+async def get_me(
+    current_user: User = Depends(get_current_user),
+):
     return current_user
 
 
@@ -107,11 +154,17 @@ async def predict(
     current_user: User = Depends(get_current_user),
 ):
     image = read_file_as_image(await file.read())
-    img_batch = np.expand_dims(image, 0)
-    predictions = MODEL.predict(img_batch, verbose=0)
+
+    img_batch = np.expand_dims(image, axis=0)
+
+    predictions = MODEL.predict(
+        img_batch,
+        verbose=0,
+    )
 
     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
     confidence = float(np.max(predictions[0]))
+
     return {
         "class": predicted_class,
         "confidence": confidence,
@@ -124,7 +177,11 @@ async def ai_advice(
     body: AdviceRequest,
     current_user: User = Depends(get_current_user),
 ):
-    result = get_ai_advice(body.disease, body.confidence)
+    result = get_ai_advice(
+        body.disease,
+        body.confidence,
+    )
+
     return {
         "disease": body.disease,
         "confidence": body.confidence,
@@ -135,5 +192,11 @@ async def ai_advice(
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", settings.port))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 8000))
+
+    uvicorn.run(
+        "api.main:app",
+        host="0.0.0.0",
+        port=port,
+        reload=False,
+    )

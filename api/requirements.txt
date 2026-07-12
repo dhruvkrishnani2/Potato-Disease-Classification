@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 fastapi
 uvicorn[standard]
 tensorflow>=2.21.0
@@ -10,3 +11,17 @@ PyJWT
 google-auth
 google-generativeai
 bcrypt
+=======
+fastapi
+uvicorn[standard]
+tensorflow==2.20.0
+numpy
+pillow
+python-multipart
+pydantic-settings
+python-dotenv
+PyJWT
+google-auth
+google-genai
+bcrypt
+>>>>>>> 42c3660c85f8d7a8656ef944aa7d8ceef3db59aa
