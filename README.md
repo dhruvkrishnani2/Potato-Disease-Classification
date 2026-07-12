@@ -147,6 +147,6 @@ See `training/training.ipynb` to train on the PlantVillage potato subset and exp
 
 ## Deploy Links -
 
-Frontend - https://staging.dh9zym1k5fwoa.amplifyapp.com
-Backend -  http://spudgrd-env.eba-npdgahcp.eu-north-1.elasticbeanstalk.com
+Frontend - https://staging.dh9zym1k5fwoa.amplifyapp.com ,
+Backend -  http://spudgrd-env.eba-npdgahcp.eu-north-1.elasticbeanstalk.com ,
 API(Docs) - http://spudgrd-env.eba-npdgahcp.eu-north-1.elasticbeanstalk.com/docs
