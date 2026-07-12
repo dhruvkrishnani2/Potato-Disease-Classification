@@ -1,8 +1,7 @@
-<<<<<<< HEAD
 fastapi==0.135.3
 uvicorn[standard]==0.44.0
 
-tensorflow==2.21.0
+tensorflow==2.19.1
 numpy==1.26.4
 pillow==11.1.0
 
@@ -17,17 +16,3 @@ google-generativeai==0.7.0
 protobuf==4.25.3
 
 bcrypt==5.0.0
-=======
-fastapi
-uvicorn[standard]
-tensorflow==2.20.0
-numpy
-pillow
-python-multipart
-pydantic-settings
-python-dotenv
-PyJWT
-google-auth
-google-genai
-bcrypt
->>>>>>> 42c3660c85f8d7a8656ef944aa7d8ceef3db59aa
