@@ -15,4 +15,8 @@ google-auth==2.53.0
 google-generativeai==0.7.0
 protobuf==4.25.3
 
+<<<<<<< HEAD
 bcrypt==5.0.0
+=======
+bcrypt==5.0.0
+>>>>>>> 4f0bcd3cac806951832e0d80df2a2d8aa91823d1
