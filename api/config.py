@@ -7,6 +7,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
+    # Auth / OAuth
+    google_client_id: str = ""
+    jwt_secret_key: str = "change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 60 * 24
+
+    # AI advice
+    gemini_api_key: str = ""
+
+    # App
     frontend_url: str = "http://localhost:3000"
     port: int = 8000
 
@@ -22,6 +32,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 
 @lru_cache
