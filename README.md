@@ -5,13 +5,13 @@ Classify potato leaf images into **Early Blight**, **Late Blight**, or **Healthy
 ## Architecture
 
 ```
-┌─────────────────┐     Google OAuth      ┌──────────────────┐
-│  React Frontend │ ◄────────────────────► │  Google Identity  │
+┌─────────────────┐     Google OAuth       ┌──────────────────┐
+│  React Frontend │ ◄────────────────────► │  Google Identity │
 │  (port 3000)    │                        └──────────────────┘
 └────────┬────────┘
          │ JWT + REST
          ▼
-┌─────────────────┐     Gemini API        ┌──────────────────┐
+┌─────────────────┐     Gemini API         ┌──────────────────┐
 │  FastAPI Backend│ ◄────────────────────► │  Google Gemini   │
 │  (port 8000)    │                        └──────────────────┘
 └────────┬────────┘
@@ -106,7 +106,7 @@ npm start
 
 ```bash
 cd api
-python main.py
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **Terminal 2 — Frontend:**
