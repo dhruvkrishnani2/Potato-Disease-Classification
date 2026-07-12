@@ -144,3 +144,9 @@ npm start
 ## Training
 
 See `training/training.ipynb` to train on the PlantVillage potato subset and export to `saved_models/model_v1.keras`.
+
+## Deploy Links -
+
+Frontend - https://staging.dh9zym1k5fwoa.amplifyapp.com
+Backend -  http://spudgrd-env.eba-npdgahcp.eu-north-1.elasticbeanstalk.com
+API(Docs) - http://spudgrd-env.eba-npdgahcp.eu-north-1.elasticbeanstalk.com/docs
