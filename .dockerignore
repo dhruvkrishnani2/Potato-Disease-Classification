@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 frontend/
 training/
 gcp/
@@ -9,15 +8,3 @@ node_modules/
 **/.ipynb_checkpoints
 **/*.pyc
 api/users.json
-=======
-frontend/
-training/
-gcp/
-node_modules/
-.git/
-**/__pycache__
-**/.env
-**/.ipynb_checkpoints
-**/*.pyc
-api/users.json
->>>>>>> 42c3660c85f8d7a8656ef944aa7d8ceef3db59aa
